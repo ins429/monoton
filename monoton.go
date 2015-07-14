@@ -22,8 +22,9 @@ func main() {
 
 	r.HandleFunc("/", HomeHandler)
 
-	posts := r.Path("/posts").Subrouter()
-	posts.Methods("GET").HandlerFunc(PostsIndexHandler)
+	photos := r.Path("/photos").Subrouter()
+	photos.Methods("GET").HandlerFunc(PhotosIndexHandler)
+	photos.Methods("POST").HandlerFunc(PhotosCreateHandler)
 
 	n := negroni.New(
 		negroni.NewRecovery(),
@@ -39,6 +40,10 @@ func HomeHandler(rw http.ResponseWriter, r *http.Request) {
 	renderer.HTML(rw, http.StatusOK, "index", nil)
 }
 
-func PostsIndexHandler(rw http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(rw, "posts index")
+func PhotosIndexHandler(rw http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(rw, "photos index")
+}
+
+func PhotosCreateHandler(rw http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(rw, "photos create")
 }

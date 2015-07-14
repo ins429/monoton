@@ -13,6 +13,7 @@ class Monoton extends React.Component {
             <section>
                 <div id="stage" className="container-fluid">
                     <Grid/>
+                    <Form/>
                 </div>
             </section>
         );
@@ -53,6 +54,26 @@ class Img extends React.Component {
         return (
             <div>
                 <img src="this.props.src" alt="" />
+            </div>
+        );
+    }
+}
+
+class Form extends React.Component {
+    getInitialState() {
+        return {};
+    }
+
+    componentWillMount() {
+    }
+
+    render() {
+        return (
+            <div>
+                <form action="/photos">
+                    <input type="file" method="post" enctype="multipart/form-data" />
+                    <input type="submit" value="Upload Image" name="submit">
+                </form>
             </div>
         );
     }
