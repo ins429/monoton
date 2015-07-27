@@ -70,9 +70,10 @@ class Form extends React.Component {
     render() {
         return (
             <div>
-                <form action="/photos">
-                    <input type="file" method="post" enctype="multipart/form-data" />
-                    <input type="submit" value="Upload Image" name="submit">
+                <form action="/photos" method="post" encType="multipart/form-data">
+                    <input type="file" name="photo" />
+                    <input type="hidden" value="foo" name="foo" />
+                    <input type="submit" value="Upload Image" name="submit" />
                 </form>
             </div>
         );

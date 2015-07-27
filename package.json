@@ -4,6 +4,7 @@
   "description": "",
   "main": "gulpfile.js",
   "dependencies": {
+    "react": "^0.13.3",
     "gulp-util": "^3.0.0",
     "object-assign": "^2.0.0",
     "through2": "^0.6.1",
