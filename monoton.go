@@ -15,6 +15,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	// "os"
+	// "reflect"
 )
 
 type PostForm struct {
@@ -66,8 +67,6 @@ func PhotosCreateHandler(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(postForm)
-
 	// To access the file data you need to Open the file
 	// handler and read the bytes out.
 	var fh io.ReadCloser
@@ -87,14 +86,27 @@ func PhotosCreateHandler(rw http.ResponseWriter, r *http.Request) {
 			http.StatusInternalServerError)
 		return
 	}
+
+	fileByte := make([]byte, size+100000)
+	if _, err = fh.Read(fileByte); err != nil {
+		if err != io.EOF {
+			http.Error(rw,
+				fmt.Sprint("Error reading File %+v", err),
+				http.StatusInternalServerError)
+			return
+		}
+	}
+
 	// Now you have the attachment in databytes.
 	// Maximum size is default is 10MB.
-	fmt.Println("Read %v bytes with filename %s",
-		size, postForm.Photo.Filename)
+	fmt.Println("Read %v bytes with filename %s header %s",
+		size, postForm.Photo.Filename, postForm.Photo.Header)
 	fmt.Fprintln(rw, "photos create")
+	fmt.Println(fileByte)
+	uploadToS3(fileByte, postForm.Photo.Header.Get("Content-Type"), postForm.Photo.Filename)
 }
 
-func uploadToS3() {
+func uploadToS3(data []byte, contentType string, filename string) {
 	auth, err := aws.EnvAuth()
 	if err != nil {
 		fmt.Println("aws auth error:", err)
@@ -107,8 +119,7 @@ func uploadToS3() {
 
 	fmt.Println(bucket.Name)
 
-	data := []byte("Hello, Goamz!!")
-	err = bucket.Put("sample.txt", data, "text/plain", s3.BucketOwnerFull)
+	err = bucket.Put(filename, data, contentType, s3.BucketOwnerFull)
 	if err != nil {
 		panic(err.Error())
 	}
